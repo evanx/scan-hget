@@ -2,14 +2,53 @@
 
 Containerized utility to scan Redis keys and hget a field of any hashes.
 
+<img src='https://raw.githubusercontent.com/evanx/hget/master/docs/readme/images/options.png'>
+
+
 ## Config
 
 ```javascript
 ```
+where the default `redisUrl` is `'redis://localhost:6379'`
 
 ## Implementation
 
 ```javascript
+```
+
+## Docker
+
+```shell
+docker build -t hget https://github.com/evanx/hget.git
+```
+where tagged as image `hget`
+
+```shell
+docker run --network=host -e pattern='*' hget | head
+```
+where `--network-host` connects the container to your `localhost` bridge. The default `redisUrl` of `redis://localhost:6379` works in that case.
+
+As such, you should inspect the source:
+```shell
+git clone https://github.com/evanx/hget.git
+cd hget
+cat Dockerfile
+```
+```
+FROM node:7.4.0
+ADD package.json .
+RUN npm install
+ADD components components
+ADD app app
+ENV NODE_ENV production
+CMD ["node", "--harmony", "app/index.js"]
+```
+
+Having reviewed the code, you can also execute as follows:
+```
+cat package.json
+npm install
+pattern='*' npm start
 ```
 
 https://twitter.com/@evanxsummers

@@ -5,9 +5,13 @@ const lodash = require('lodash');
 module.exports = (config, redis) => [
     'debug', 'info', 'warn', 'error'
 ].reduce((logger, level) => {
-    logger[level] = function() {
-        console_log(level, ...arguments);
-    };
+    if (level === 'debug' && config.logging !== 'debug') {
+        logger[level] = () => undefined;
+    } else {
+        logger[level] = function() {
+            console_log(level, ...arguments);
+        };
+    }
     return logger;
 }, {});
 

@@ -1,36 +1,80 @@
 
-module.exports = (metas, params, options = {}) => Object.keys(metas).reduce((props, key) => {
+const lodash = require('lodash');
+const clc = require('cli-color');
+
+module.exports = (metas, params, options = {}) => Object.keys(metas).map(key => {
     const meta = metas[key];
-    if (options.debug) {
-        console.log('meta', key, meta);
-    }
-    if (params[key]) {
-        const value = params[key];
-        if (!value.length) {
-            throw new Error(`Property '${key}' is empty'`);
-        }
-        if (meta.type === 'integer') {
-            props[key] = parseInt(value);
-        } else {
-            props[key] = value;
-        }
-    } else if (meta.default !== undefined) {
-        props[key] = meta.default;
-    } else if (options.required === false) {
-    } else if (!props[key]) {
-        const meta = metas[key];
-        if (meta.required !== false) {
-            const parts = [
-                `Missing required property '${key}'`
-            ];
-            if (meta.description) {
-                parts.push(`for the ${meta.description}`);
+    meta.key = key;
+    if (meta.default !== undefined) {
+        if (meta.type === undefined) {
+            if (Number.isInteger(meta.default)) {
+                meta.type = 'integer';
             }
-            if (meta.example) {
-                parts.push(`e.g. '${meta.example}'`);
+            if (meta.example === undefined) {
+                meta.example = meta.default;
             }
-            throw new Error(parts.join(' '));
         }
     }
-    return props;
+    return meta;
+}).reduce((props, meta) => {
+    const key = meta.key;
+    try {
+        if (options.debug) {
+            console.log('meta', meta);
+        }
+        if (params[key]) {
+            const value = params[key];
+            if (!value.length) {
+                throw new Error(`Property '${key}' is empty'`);
+            }
+            if (meta.type === 'integer') {
+                props[key] = parseInt(value);
+            } else {
+                props[key] = value;
+            }
+        } else if (meta.default !== undefined) {
+            props[key] = meta.default;
+        } else if (options.required === false) {
+        } else if (!props[key]) {
+            const meta = metas[key];
+            if (meta.required !== false) {
+                throw new Error(`Missing required property '${key}'`);
+            }
+        }
+        return props;
+    } catch (err) {
+        console.log([
+            clc.yellow.bold('Options:'),
+            ...Object.keys(metas).map(
+                key => metas[key]
+            ).map(
+                formatMeta
+            ).map(
+                lines => lines.map(line => `  ${clc.cyan(line)}`).join('\n')
+            )
+        ].join('\n'));
+        throw err;
+    }
 }, options.defaults || {});
+
+const formatMeta = meta => {
+    let lines = [lodash.capitalize(meta.description)];
+    if (meta.hint) {
+        lines.push(`Hint: ${meta.hint}`);
+    }
+    if (meta.note) {
+        lines.push(clc.white(`Note: ${meta.note}`));
+    }
+    if (false && meta.type) {
+        lines.push(`type: ${meta.type}`);
+    }
+    return [
+        (meta.example === undefined)
+        ? clc.bold(`${meta.key}`)
+        : (meta.type === 'integer')
+        ? clc.bold(`${meta.key}=${meta.example}`)
+        : clc.bold(`${meta.key}='${meta.example}'`)
+        ,
+        ...lines.map(line => `  ${line}`)
+    ];
+};
