@@ -157,9 +157,10 @@ docker run --network=test-hget-redis-network
 -e redisUrl=redis://:OyWqclBrXP7QNw1cqwlP8hgwNxgz36AV@172.20.0.2:6379
 -e format=both -e pattern=mytest:*:h -e field=err evanxsummers/hget
 ```
+where we have specified `format=both` to print hashes key and field value for `field=err`
 ```
-mytest:1002:h
-mytest:1001:h
+mytest:1002:h other_error
+mytest:1001:h some_error
 ```
 
 https://twitter.com/@evanxsummers
