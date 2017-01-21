@@ -139,6 +139,16 @@ docker run --network=test-hget-redis-network -e redisUrl=$redisUrl \
 docker rm -f `docker ps -q -f name=test-redis-hget`
 docker network rm test-hget-redis-network
 ```
+where we:
+- create isolated bridge network `test-hget-redis-network` for the demo
+- `docker run tutum/redis` for an isolated test Redis container
+- from the `logs` of that instance to get its password into `redisPass`
+- `docker inspect` that instance to get its IP number into `redisHost`
+- create some test keys in the Redis container e.g. `mytest:1001:h`
+- `docker run evanxsummers/hget` to run our utility against that Redis container
+- remove the test Redis container
+- remove the test network
+
 
 See `docs/demo.out`
 ```
