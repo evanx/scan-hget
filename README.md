@@ -12,15 +12,19 @@ Sample data
 redis-cli hset mytest:1001:h err some_error
 redis-cli hset mytest:1002:h err other_error
 ```
+where we set field `err` to some error message.
 
 Use `format=both` to print the key and the field value:
 ```
 pattern='mytest*' format=both field=err npm start
 ```
+where we have specified the `err` field for the query.
 ```
 mytest:1002:h other_error
 mytest:1001:h some_error
 ```
+where the hash key and the value of its `err` field have been printed.
+
 Otherwise `format=value` will print only the field value:
 ```
 pattern='mytest*' format=value field=err npm start
@@ -80,10 +84,10 @@ See `app/index.js`
 ```shell
 docker build -t hget https://github.com/evanx/hget.git
 ```
-where tagged as image `hget`
+where we tag the image as `hget`
 
 ```shell
-docker run --network=host -e pattern='*' hget | head
+docker run --network=host -e pattern='authbot:*' -e field=role -e format=both hget
 ```
 where `--network-host` connects the container to your `localhost` bridge. The default `redisUrl` of `redis://localhost:6379` works in that case.
 
@@ -109,5 +113,15 @@ cat package.json
 npm install
 pattern='*' npm start
 ```
+
+### Prebuilt image demo
+
+```
+evan@dijkstra:~$ docker run --network=redis \
+  -e redisUrl=redis://$redisHost:6379 \
+  -e pattern='authbot:*' -e field=role -e format=both \
+  evanxsummers/hget
+```
+where rather than using `--network=host` we have a Redis container with IP address `$redisHost` on a network bridge called `redis`
 
 https://twitter.com/@evanxsummers
