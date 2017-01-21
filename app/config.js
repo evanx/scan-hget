@@ -20,7 +20,7 @@ module.exports = {
         format: {
             default: 'key',
             description: 'the output format',
-            options: ['key', 'field', 'both', 'value', 'all']
+            options: ['key', 'value', 'both', 'json']
         },
         logging: {
             default: 'info',
