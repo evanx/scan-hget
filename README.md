@@ -16,10 +16,14 @@ where we might have the field `err` on some hashes keys.
 
 We wish to perform a query on this specific field e.g. as follows using `bash` and `redis-cli`
 ```
-for key in `redis-cli keys 'mytest:*'`
+for key in `redis-cli keys 'mytest:*:h'`
 do
-  echo $key `redis-cli hget err`
+  echo $key `redis-cli hget $key err`
 done
+```
+```
+mytest:1001:h some_error
+mytest:1002:h other_error
 ```
 
 ## Usage
