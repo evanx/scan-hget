@@ -5,6 +5,31 @@ Containerized utility to scan Redis keys and hget a field of any hashes.
 <img src='https://raw.githubusercontent.com/evanx/hget/master/docs/readme/images/options.png'>
 
 
+## Usage
+
+Sample data
+```
+redis-cli hset mytest:1001:h err some_error
+redis-cli hset mytest:1002:h err other_error
+```
+
+Use `format=both` to print the key and the field value:
+```
+pattern='mytest*' format=both field=err npm start
+```
+```
+mytest:1002:h other_error
+mytest:1001:h some_error
+```
+Otherwise `format=value` will print only the field value:
+```
+pattern='mytest*' format=value field=err npm start
+```
+```
+other_error
+some_error
+```
+
 ## Config
 
 See `app/config.js`

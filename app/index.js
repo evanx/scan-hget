@@ -26,17 +26,6 @@ async function main(context) {
                 });
                 const hashesKeys = keys.filter((key, index) => types[index] === 'hash');
                 if (hashesKeys.length) {
-                    if (config.format === 'hkeys') { // undocumented feature
-                        count += hashesKeys.length;
-                        const results = await multiExecAsync(client, multi => {
-                            hashesKeys.forEach(key => multi.hkeys(key));
-                        });
-                        hashesKeys.forEach((key, index) => {
-                            const result = results[index];
-                            console.log(`${clc.cyan(key)} ${result.join(' ')}`);
-                        });
-                        continue;
-                    }
                     const hget = await multiExecAsync(client, multi => {
                         hashesKeys.forEach(key => multi.hget(key, config.field));
                     });
