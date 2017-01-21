@@ -1,6 +1,6 @@
 # hget
 
-Containerized utility to scan Redis keys and hget a field of any hashes.
+Containerized utility to scan Redis keys and hget a specified hashes field.
 
 <img src='https://raw.githubusercontent.com/evanx/hget/master/docs/readme/images/options.png'>
 
