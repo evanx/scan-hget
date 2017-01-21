@@ -9,7 +9,6 @@ Containerized utility to scan Redis keys and hget a field of any hashes.
 
 See `app/config.js`
 ```javascript
-module.exports = {
     required: {
         pattern: {
             description: 'the matching pattern for Redis scan',
