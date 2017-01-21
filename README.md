@@ -135,7 +135,7 @@ redis-cli -a $redisPass -h $redisHost hset mytest:1001:h err some_error
 redis-cli -a $redisPass -h $redisHost hset mytest:1002:h err other_error
 redis-cli -a $redisPass -h $redisHost keys 'mytest:*:h'
 docker run --network=test-hget-redis-network -e redisUrl=$redisUrl \
-  -e pattern=mytest:*:h -e field=err evanxsummers/hget
+  -e pattern=mytest:*:h -e field=err -e format=both evanxsummers/hget
 docker rm -f `docker ps -q -f name=test-redis-hget`
 docker network rm test-hget-redis-network
 ```
@@ -155,7 +155,7 @@ See `docs/demo.out`
 ```
 docker run --network=test-hget-redis-network
 -e redisUrl=redis://:OyWqclBrXP7QNw1cqwlP8hgwNxgz36AV@172.20.0.2:6379
--e pattern=mytest:*:h -e field=err evanxsummers/hget
+-e format=both -e pattern=mytest:*:h -e field=err evanxsummers/hget
 ```
 ```
 mytest:1002:h
