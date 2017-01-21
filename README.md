@@ -5,14 +5,24 @@ Containerized utility to scan Redis keys and hget a field of any hashes.
 <img src='https://raw.githubusercontent.com/evanx/hget/master/docs/readme/images/options.png'>
 
 
-## Usage
+## Use case
 
 Sample data
 ```
 redis-cli hset mytest:1001:h err some_error
 redis-cli hset mytest:1002:h err other_error
 ```
-where we set field `err` to some error message.
+where we might have the field `err` on some hashes keys.
+
+We wish to perform a query on a specific field as follows using `bash` and `redis-cli`
+```
+for key in `redis-cli keys 'mytest:*'`
+do
+  echo $key `redis-cli hget err`
+done
+```
+
+## Usage
 
 Use `format=both` to print the key and the field value:
 ```
