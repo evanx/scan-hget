@@ -14,7 +14,7 @@ redis-cli hset mytest:1002:h err other_error
 ```
 where we might have the field `err` on some hashes keys.
 
-We wish to perform a query on a specific field as follows using `bash` and `redis-cli`
+We wish to perform a query on this specific field e.g. as follows using `bash` and `redis-cli`
 ```
 for key in `redis-cli keys 'mytest:*'`
 do
