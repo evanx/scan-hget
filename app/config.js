@@ -9,18 +9,18 @@ module.exports = {
             description: 'name of the hashes field to print'
         },
         limit: {
-            default: 30,
             description: 'the maximum number of keys to print',
-            note: 'zero means unlimited'
+            note: 'zero means unlimited',
+            default: 30
         },
         redisUrl: {
-            default: 'redis://localhost:6379',
-            description: 'the Redis URL'
+            description: 'the Redis URL',
+            default: 'redis://localhost:6379'
         },
         format: {
-            default: 'key',
             description: 'the output format',
-            options: ['key', 'value', 'both', 'json']
+            options: ['key', 'value', 'both', 'json'],
+            default: 'key',
         },
         logging: {
             default: 'info',

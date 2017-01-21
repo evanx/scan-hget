@@ -60,18 +60,18 @@ See `app/config.js`
         description: 'name of the hashes field to print'
     },
     limit: {
-        default: 30,
         description: 'the maximum number of keys to print',
-        note: 'zero means unlimited'
+        note: 'zero means unlimited',
+        default: 30
     },
     redisUrl: {
-        default: 'redis://localhost:6379',
-        description: 'the Redis URL'
+        description: 'the Redis URL',
+        default: 'redis://localhost:6379'
     },
     format: {
-        default: 'key',
         description: 'the output format',
-        options: ['key', 'value', 'both', 'json']
+        options: ['key', 'value', 'both', 'json'],
+        default: 'key',
 ```
 where the default `redisUrl` is `'redis://localhost:6379'`
 
@@ -95,6 +95,8 @@ See `app/index.js`
 
 ## Docker
 
+Having audited the `Dockerfile` and code, you can build and run as follows:
+
 ```shell
 docker build -t hget https://github.com/evanx/hget.git
 ```
@@ -105,28 +107,6 @@ docker run --network=host -e pattern='authbot:*' -e field=role -e format=both hg
 ```
 where `--network-host` connects the container to your `localhost` bridge. The default `redisUrl` of `redis://localhost:6379` works in that case.
 
-As such, you should inspect the source:
-```shell
-git clone https://github.com/evanx/hget.git
-cd hget
-cat Dockerfile
-```
-```
-FROM node:7.4.0
-ADD package.json .
-RUN npm install
-ADD components components
-ADD app app
-ENV NODE_ENV production
-CMD ["node", "--harmony", "app/index.js"]
-```
-
-Having reviewed the code, you can also execute as follows:
-```
-cat package.json
-npm install
-pattern='*' npm start
-```
 
 ### Prebuilt image demo
 
@@ -137,5 +117,28 @@ evan@dijkstra:~$ docker run --network=redis \
   evanxsummers/hget
 ```
 where rather than using `--network=host` we have a Redis container with IP address `$redisHost` on a network bridge called `redis`
+
+
+### Test Redis instance
+
+
+```
+(
+  set -u -e -x
+  container=`docker run --name test-redis-hget -d tutum/redis`
+  redisAuth=`docker logs $container | grep '^\s*redis-cli -a' |
+    sed -e 's/^\s*redis-cli -a \(\w*\) .*$/\1/'`
+  redisUrl="redis://:$redisAuth@$redisHost:6379"
+  redis
+)
+```
+
+Reset
+```
+for container in `docker ps -q -f name=test-redis-hget`
+do
+  docker rm -f $container
+done
+```
 
 https://twitter.com/@evanxsummers
