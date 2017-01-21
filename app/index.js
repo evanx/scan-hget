@@ -1,33 +1,28 @@
 
-const assert = require('assert');
-const lodash = require('lodash');
-
-require('../components/redisUtil')(require('./meta')).then(main);
-
-const state = {};
+require('../components/redisCliApp')(require('./config')).then(main);
 
 async function main(context) {
     Object.assign(global, context);
-    logger.level = config.loggerLevel;
+    logger.level = config.logging;
     logger.debug('main', config);
     try {
+        let cursor;
+        while (cursor !== 0) {
+            const [result] = await multiExecAsync(client, multi => {
+                multi.scan(cursor || 0, 'match', config.pattern);
+            });
+            cursor = parseInt(result[0]);
+            await Promise.map(result[1], async key => {
+                console.log(key);
+            });
+        }
     } catch (err) {
         console.error(err);
     } finally {
+        end();
     }
 }
-
-async function subscribeHub({hubNamespace, hubRedis}) {
-    state.clientHub = redis.createClient(hubRedis);
-    state.clientHub.on('message', (channel, message) => {
-    });
-    state.clientHub.subscribe([hubNamespace, secret].join(':'));
-}
-
 
 async function end() {
     client.quit();
-    if (state.clientHub) {
-        state.clientHub.quit();
-    }
 }
