@@ -144,7 +144,7 @@ where we:
 - `docker run tutum/redis` for an isolated test Redis container
 - from the `logs` of that instance to get its password into `redisPass`
 - `docker inspect` that instance to get its IP number into `redisHost`
-- build `redisUrl` from `redisPass` and `redisHost` and port `6379`
+- build `redisUrl` from `redisPass` and `redisHost` and default port `6379`
 - create some test keys in the Redis container e.g. `mytest:1001:h`
 - `docker run evanxsummers/hget` to run our utility against that Redis container
 - remove the test Redis container
