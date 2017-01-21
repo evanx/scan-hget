@@ -121,24 +121,32 @@ where rather than using `--network=host` we have a Redis container with IP addre
 
 ### Test Redis instance
 
+See `scripts/demo.sh`
+```
+docker network create -d bridge test-hget-redis-network
+container=`docker run --network=test-hget-redis-network \
+  --name test-redis-hget -d tutum/redis`
+redisPass=`docker logs $container | grep '^\s*redis-cli -a' |
+  sed -e 's/^\s*redis-cli -a \(\w*\) .*$/\1/'`
+redisHost=`docker inspect $container |
+  grep '"IPAddress":' | tail -1 | sed 's/.*"\([0-9\.]*\)",/\1/'`
+redisUrl="redis://:$redisPass@$redisHost:6379"
+redis-cli -a $redisPass -h $redisHost hset mytest:1001:h err some_error
+redis-cli -a $redisPass -h $redisHost hset mytest:1002:h err other_error
+redis-cli -a $redisPass -h $redisHost keys 'mytest:*:h'
+docker run --network=test-hget-redis-network -e redisUrl=$redisUrl \
+  -e pattern=mytest:*:h -e field=err evanxsummers/hget
+docker rm -f `docker ps -q -f name=test-redis-hget`
+docker network rm test-hget-redis-network
+```
 
+See `docs/demo.out`
 ```
-(
-  set -u -e -x
-  container=`docker run --name test-redis-hget -d tutum/redis`
-  redisAuth=`docker logs $container | grep '^\s*redis-cli -a' |
-    sed -e 's/^\s*redis-cli -a \(\w*\) .*$/\1/'`
-  redisUrl="redis://:$redisAuth@$redisHost:6379"
-  redis
-)
-```
-
-Reset
-```
-for container in `docker ps -q -f name=test-redis-hget`
-do
-  docker rm -f $container
-done
++ docker run --network=test-hget-redis-network
+-e redisUrl=redis://:OyWqclBrXP7QNw1cqwlP8hgwNxgz36AV@172.20.0.2:6379
+-e pattern=mytest:*:h -e field=err evanxsummers/hget
+mytest:1002:h
+mytest:1001:h
 ```
 
 https://twitter.com/@evanxsummers
