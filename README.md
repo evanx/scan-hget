@@ -36,8 +36,6 @@ where the default `redisUrl` is `'redis://localhost:6379'`
 
 See `app/index.js`
 ```javascript
-let cursor;
-while (true) {
     const [result] = await multiExecAsync(client, multi => {
         multi.scan(cursor || 0, 'match', config.pattern);
     });
@@ -57,17 +55,17 @@ while (true) {
             if (config.format === 'hkeys') { // undocumented feature
                 count += hashesKeys.length;
                 const results = await multiExecAsync(client, multi => {
-                    keys.forEach(key => multi.hkeys(key));
+                    hashesKeys.forEach(key => multi.hkeys(key));
                 });
-                keys.forEach((key, index) => {
+                hashesKeys.forEach((key, index) => {
                     const result = results[index];
                     console.log(`${clc.cyan(key)} ${result.join(' ')}`);
                 });
             } else {
                 const hget = await multiExecAsync(client, multi => {
-                    keys.forEach(key => multi.hget(key, config.field));
+                    hashesKeys.forEach(key => multi.hget(key, config.field));
                 });
-                keys.map((key, index) => [key, hget[index]])
+                hashesKeys.map((key, index) => [key, hget[index]])
                 .filter(([key, value]) => value && value !== 'null')
                 .map(([key, value]) => {
                     count++;
@@ -88,10 +86,6 @@ while (true) {
             }
         }
     }
-    if (cursor === 0) {
-        break;
-    }
-}
 ```
 
 ## Docker
