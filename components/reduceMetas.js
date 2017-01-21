@@ -58,7 +58,7 @@ module.exports = (metas, params, options = {}) => Object.keys(metas).map(key => 
 }, options.defaults || {});
 
 const formatMeta = meta => {
-    let lines = [lodash.capitalize(meta.description)];
+    let lines = [lodash.capitalize(meta.description.slice(0, 1)) + meta.description.slice(1)];
     if (meta.hint) {
         lines.push(`Hint: ${meta.hint}`);
     }
