@@ -70,10 +70,10 @@ const formatMeta = meta => {
     }
     return [
         (meta.example === undefined)
-        ? clc.bold(`${meta.key}`)
-        : (meta.type === 'integer')
-        ? clc.bold(`${meta.key}=${meta.example}`)
-        : clc.bold(`${meta.key}='${meta.example}'`)
+        ? `${clc.bold(meta.key)}`
+        : (meta.type === 'integer' || !/\s/.test(meta.example))
+        ? `${clc.bold(meta.key)}=${meta.example}`
+        : `${clc.bold(meta.key)}='${meta.example}'`
         ,
         ...lines.map(line => `  ${line}`)
     ];

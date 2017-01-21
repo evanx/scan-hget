@@ -5,6 +5,7 @@ async function main(context) {
     Object.assign(global, context);
     logger.level = config.logging;
     logger.debug('main', config);
+    let count = 0;
     try {
         let cursor;
         while (cursor !== 0) {
@@ -15,6 +16,9 @@ async function main(context) {
             await Promise.map(result[1], async key => {
                 console.log(key);
             });
+            if (count > config.limit) {
+                console.error('Limit exceeded. Try: limit=0');
+            }
         }
     } catch (err) {
         console.error(err);
