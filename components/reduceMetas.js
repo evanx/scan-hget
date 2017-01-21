@@ -18,11 +18,16 @@ module.exports = (metas, params, options = {}) => Object.keys(metas).reduce((pro
     } else {
         const propMeta = metas[key];
         if (propMeta.required !== false) {
-            throw new Error([
-                `Missing required property:`,
-                `'${key}' for the ${propMeta.description}`,
-                `e.g. '${propMeta.example}'`
-            ].join(' '));
+            const parts = [
+                `Missing required property '${key}'`
+            ];
+            if (propMeta.description) {
+                parts.push(`for the ${propMeta.description}`);
+            }
+            if (propMeta.example) {
+                parts.push(`e.g. '${propMeta.example}'`);
+            }
+            throw new Error(parts.join(' '));
         }
     }
     return props;

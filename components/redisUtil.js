@@ -7,20 +7,13 @@ const reduceMetas = require('./reduceMetas');
 bluebird.promisifyAll(redis.RedisClient.prototype);
 bluebird.promisifyAll(redis.Multi.prototype);
 
-const debug = console.log;
+const debug = () => undefined;
 
 module.exports = async metas => {
     debug(`redisApp {${Object.keys(metas).join(', ')}}`);
     try {
-        const configRedis = reduceMetas(metas, process.env, {required: false});
-        const configKey = [configRedis.namespace, 'config'].join(':');
-        debug({configRedis, configKey});
-        const client = redis.createClient(configRedis.redisUrl);
-        const [configHashes] = await multiExecAsync(client, multi => {
-            multi.hgetall(configKey);
-        });
-        debug({configHashes, assign: Object.assign(configRedis, configHashes)});
-        const config = reduceMetas(metas, Object.assign(configRedis, configHashes));
+        const config = reduceMetas(metas, process.env);
+        const client = redis.createClient(config.redisUrl);
         const logger = require('./redisLogger')(config, redis);
         return {redis, client, logger, config};
     } catch (err) {

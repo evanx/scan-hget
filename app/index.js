@@ -2,7 +2,7 @@
 const assert = require('assert');
 const lodash = require('lodash');
 
-require('../components/redisApp')(require('./meta')).then(main);
+require('../components/redisUtil')(require('./meta')).then(main);
 
 const state = {};
 
