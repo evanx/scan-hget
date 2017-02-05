@@ -2,7 +2,7 @@
   "name": "scan-hget",
   "version": "0.1.0",
   "description": "",
-  "main": "app/index.js",
+  "main": "lib/index.js",
   "scripts": {
     "lint": "eslint --cache src",
     "development": "NODE_ENV=development node --harmony lib/index.js",
