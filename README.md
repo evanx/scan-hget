@@ -50,7 +50,7 @@ some_error
 
 ## Config
 
-See `app/config.js`
+See `lib/config.js`
 ```javascript
     pattern: {
         description: 'the matching pattern for Redis scan',
@@ -77,7 +77,7 @@ where the default `redisUrl` is `'redis://localhost:6379'`
 
 ## Implementation
 
-See `app/index.js`
+See `lib/index.js`
 ```javascript
     let cursor;
     while (true) {

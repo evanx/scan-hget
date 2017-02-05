@@ -1,7 +1,7 @@
-FROM node:7.4.0
+FROM node:7.5.0
 ADD package.json .
 RUN npm install --silent
 ADD components components
-ADD app app
+ADD lib lib
 ENV NODE_ENV production
-CMD ["node", "--harmony", "app/index.js"]
+CMD ["node", "--harmony", "lib/index.js"]
